@@ -1,5 +1,7 @@
+using API;
 using API.Services.Interface;
 using API.Services.Repositories;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -14,6 +16,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(opt=>{
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddCors(opt=>{
+opt.AddPolicy("CorsPolicy",policy=>{
+    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
+});
+});
+IMapper mapper = MappingConfig.RegisterMaps().CreateMapper();
+builder.Services.AddSingleton(mapper);
+// builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IActivitiesRepo, ActivitiesRepo>();
 var app = builder.Build();
 
@@ -25,6 +36,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 

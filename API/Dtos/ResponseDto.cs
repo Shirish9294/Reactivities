@@ -9,8 +9,6 @@ namespace API.Dtos
     {
         public bool isSuccess { get; set; } = true;
         public object Result { get; set; } = null;
-        public string DisplayMessage { get; set; }=null;
         public string ErrorMessage { get; set; } =null;
-        public DateTime DateCreated { get; set; } = DateTime.Now;
     }
 }
